@@ -1,7 +1,6 @@
 <html>
 <head>
-	<link rel="stylesheet" href="/src/style.css">
-	<title>SoftwareRewind - Coming Soon</title>
+	<?php $title="Home"; include 'head.php'; ?>
 </head>
 
 <body>
