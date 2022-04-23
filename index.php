@@ -11,7 +11,6 @@
 	<hr>
     <?php include 'nav.html'; ?>
     <hr>
-	<br>
 	<i>Coming Soon&trade;!</i>
 	<br>
 	<p>While you're here, check out <a href="http://drivers.nickandfloppy.com/">NetDrivers</a>, SoftwareRewind's sister project, focused on driver archival!</p>

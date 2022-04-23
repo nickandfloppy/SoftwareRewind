@@ -49,7 +49,7 @@
     $conn = new mysqli($servername, $username, $password, $dbname);
     // Check connection
     if ($conn->connect_error) {
-    	die("Connection failed: " . $conn->connect_error);
+    	die("<b>Connection failed:</b> " . $conn->connect_error);
     }
 
     if ($queryScope == "title") {
@@ -57,11 +57,15 @@
     	if ($query == "%%") {
     		return;
     	} else {
+            $querytime = microtime(true);
     		$stmt = $conn->prepare("SELECT ID, Name, CategoryID FROM software WHERE Name LIKE ?");
     		$stmt->bind_param(s,$query);
     		$stmt->execute();
     		$result = $stmt->get_result();
-    		echo $result->num_rows . " results for \"" . $cleanquery . "\" in software titles<hr>";
+            $querytime = microtime(true) - $querytime;
+			if ($result->num_rows > 0) $results = $result->num_rows;
+			else $results = "No";
+    		echo $results . " results for \"" . $cleanquery . "\" in software titles<br><b>Query Time:</b> " . round($querytime, 5) . "ms";
     	}
     
     	if ($result->num_rows > 0) {
@@ -69,19 +73,19 @@
     		while($row = $result->fetch_assoc()) {
     			echo "<h2>ID " . $row["ID"] . " - ". $row["Name"] . " (Category " . $row["CategoryID"] . ")</h2>";
     		}
-    	} else {
-    		echo "No Results for " . $cleanquery;
     	}
     } else if ($queryScope == "filename") {
     	// Query by device name/manufacturer
         if ($query == "%%") {
     		return;
     	} else {
-    		$stmt = $conn->prepare("SELECT ID, Path, Filename, Mirrors, Risk FROM files WHERE Filename LIKE ?");
+            $querytime = microtime(true);
+            $stmt = $conn->prepare("SELECT ID, Path, Filename, Mirrors, Risk FROM files WHERE Filename LIKE ?");
     		$stmt->bind_param(ss,$query, $query);
     		$stmt->execute();
     		$result = $stmt->get_result();
-    		echo $result->num_rows . " results for \"" . $cleanquery . "\" in filenames<hr>";
+            $querytime = microtime(true) - $querytime;
+            echo $result->num_rows . " results for \"" . $cleanquery . "\" in filenames (took " . round($querytime, 5) . "ms)<hr>";
     	}
     
     	if ($result->num_rows > 0) {
@@ -89,8 +93,6 @@
     		while($row = $result->fetch_assoc()) {
     			echo "<h2><a href=\"/devices.php?id=" . $row["ID"] . "\">". $row["Filename"] . " " . $row["Risk"] . "</a></h2>";
     		}
-    	} else {
-    		echo "No Results for \"" . $cleanquery . "\"";
     	}
     }
     $conn->close();
